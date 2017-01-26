@@ -1,0 +1,12 @@
+Reference:
+
+1. Examples:
+https://gist.github.com/carlward/54ec1c91b62a5f911c42#file-sample_project-md
+https://docs.google.com/document/d/1F0Vs14oNEs2idFJR3C_OPxwS6L0HPliOii-QpbmrMo4/pub#h.ql5hndj5vh2a
+
+2. tool for visualization
+
+http://matplotlib.org/api/pyplot_api.html
+
+
+# I didn't refer on forum this time, might take a look how other people doing later when I have time.
