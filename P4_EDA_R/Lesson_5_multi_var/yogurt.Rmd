@@ -1,0 +1,108 @@
+---
+title: "Yogurt"
+output: html_notebook
+---
+
+```{r}
+yo <- read.csv('yogurt.csv')
+str(yo)
+yo$id <- factor(yo$id)
+```
+
+```{r}
+str(yo)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+ggplot(yo, aes(price)) +
+  geom_histogram(binwidth = 10)
+
+```
+
+```{r}
+unique(yo$price)
+
+```
+
+
+```{r}
+# all purchases
+yo <- transform(yo, all.purchases = strawberry + blueberry + pina.colada + plain + mixed.berry)
+```
+
+
+```{r}
+# Create a scatterplot of price vs time.
+
+ggplot(yo, aes(time, price)) +
+  geom_point(alpha = 0.25, shape = 21, position = position_jitter(h=0))
+
+```
+
+
+```{r}
+# sample of households
+set.seed(123)
+sample.ids <- sample(levels(yo$id), 16)
+
+ggplot(data = subset(yo, id %in% sample.ids), aes(x=time, y=price)) +
+  facet_wrap( ~id) +
+  geom_line() +
+  geom_point(aes(size = all.purchases), pch = 1)
+
+
+```
+```{r}
+# sample of households
+set.seed(123)
+sample.ids <- sample(levels(yo$id), 16)
+
+ggplot(data = subset(yo, id %in% sample.ids), aes(x=time, y=all.purchases)) +
+  facet_wrap( ~id) +
+  geom_line() +
+  geom_point(aes(size = all.purchases), pch = 1)
+
+
+```
+
+```{r}
+# Scatter plot matrix
+
+library(GGally)
+
+theme_set(theme_minimal(20))
+
+set.seed(222)
+
+sample_rows <- sample(99003, 10000)
+
+pf <- read.csv('pseudo_facebook.tsv',sep = '\t')
+
+pf_subset <- pf[,c(2:13)]
+names(pf_subset)
+ggpairs(pf_subset[sample.int(nrow(pf_subset), 1000),])
+```
+
+```{r}
+nci <- read.table('nci.tsv')
+colnames(nci) <- c(1:64)
+
+# Heatmap
+library(reshape2)
+nci.long.samp <- melt(as.matrix(nci[1:200,]))
+names(nci.long.samp) <- c('gene', 'case', 'value')
+head(nci.long.samp)
+
+```
+
+```{r}
+ggplot(aes(y = gene, x = case, fill = value),
+       data = nci.long.samp) +
+  geom_tile() +
+  scale_fill_gradientn(colors = colorRampPalette(c('blue', 'red'))(100))
+```
+

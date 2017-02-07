@@ -1,0 +1,234 @@
+---
+title: "dplyr and tidyr"
+output: html_notebook
+---
+
+```{r}
+install.packages("devtools")
+devtools::install_github("rstudio/EDAWR")
+library(EDAWR)
+
+```
+
+
+Storms dataset
+
+```{r}
+View(storms)
+storms$storm
+```
+
+cases dataset
+
+```{r}
+View(cases)
+cases$country
+names(cases)[-1]
+unlist(cases[1:3, 2:4]) 
+# return numeric vector, first num start from first row of data
+# second num start from 2nd column which is 1st column of data
+```
+
+```{r}
+pollution$city[c(1,3,5)]
+
+```
+
+
+
+tidyr: A package that reshapes the layout of tables
+
+```{r}
+library(tidyr)
+?gather
+?spread
+```
+
+**gather**
+
+Collapses multiple columns into two columns:
+1. a key column that contains the former column names
+2. a value column that contains the former column cells
+
+```{r}
+head(cases)
+```
+
+```{r}
+gather(cases, "year", "n", 2:4)
+```
+
+**spread**
+```{r}
+storm_united <- storms %>% separate(date, c("y", "m", "d"))
+storm_united
+
+```
+
+
+**seperate**
+```{r}
+storm_united <- storms %>% separate(date, c("year", "month", "day"))
+storm_united
+
+```
+
+
+
+**unite**
+
+```{r}
+storm_sep <- unite(storm_united, "date", year, month, day, sep = "-" )
+storm_sep
+
+```
+
+
+
+
+
+### dplyr
+
+```{r}
+library(nycflights13)
+library(dplyr)
+```
+
+**select**
+Extract existing variables
+
+```{r}
+select(storms, storm, pressure)
+#              cols to extract, if don't want to extract, use -col_name
+#                               if a range, use wind:date
+# select functions:
+# - Select everything but
+# : Select range
+# contains() Select columns whose name contains a character string
+# ends_with() Select columns whose name ends with a string
+# everything() Select every column
+# matches() Select columns whose name matches a regular expression
+# num_range() Select columns named x1, x2, x3, x4, x5
+# one_of() Select columns whose names are in a group of names
+# starts_with() Select columns whose name starts with a character string
+```
+
+**filter**
+
+Extract existing observations
+
+```{r}
+#
+storms %>% filter(wind >= 50)
+# 2 conditions
+storms %>% filter(wind >= 50, storm %in% c("Alberto", "Alex"))
+
+```
+
+
+**mutate**
+Derive new variables from existing ones
+```{r}
+mutate(storms, ratio = pressure / wind, inverse = ratio^-1)
+
+mutate(storms, cummin(wind))
+```
+
+Useful mutate functions
+* All take a vector of values and return a vector of values
+** Blue functions come in dplyr
+
+pmin(), pmax() Element-wise min and max
+cummin(), cummax() Cumulative min and max
+cumsum(), cumprod() Cumulative sum and product
+between() Are values between a and b?
+cume_dist() Cumulative distribution of values
+cumall(), cumany() Cumulative all and any
+cummean() Cumulative mean
+lead(), lag() Copy with values one position
+ntile() Bin vector into n buckets
+dense_rank(), min_rank(),
+percent_rank(), row_number() Various ranking methods
+
+"Window" functions
+pmin(), pmax() Element-wise min and max
+cummin(), cummax() Cumulative min and max
+cumsum(), cumprod() Cumulative sum and product
+between() Are values between a and b?
+cume_dist() Cumulative distribution of values
+cumall(), cumany() Cumulative all and any
+cummean() Cumulative mean
+lead(), lag() Copy with values one position
+ntile() Bin vector into n buckets
+dense_rank(), min_rank(),
+percent_rank(), row_number()
+
+
+**summarise**
+Change the unit of analysis
+```{r}
+pollution %>% summarise(median = median(amount), variance = var(amount))
+```
+
+Useful summary functions
+min(), max() Minimum and maximum values
+mean() Mean value
+median() Median value
+sum() Sum of values
+var, sd() Variance and standard deviation of a vector
+first() First value in a vector
+last() Last value in a vector
+nth() Nth value in a vector
+n() The number of values in a vector
+n_distinct() The number of distinct values in a vector
+* All take a vector of values and return a single value
+** Blue functions come in dplyr
+
+
+**arrange**
+
+```{r}
+arrange(storms, desc(wind))
+arrange(storms, wind, date)
+```
+
+**group_by**
+
+```{r}
+
+```
+
+**pipeline**
+short cut to type %>%:
+cmd + shift + M
+
+
+```{r}
+pollution %>% 
+  group_by(city) %>% 
+  summarise(mean = mean(amount), sum = sum(amount), n = n()) %>% 
+  arrange(mean)
+```
+
+
+Other:
+ ungroup()
+ 
+ 
+```{r}
+tb %>%
+  select(country, year, sex) %>% 
+  group_by(country, year) 
+```
+
+
+#### Join data
+bind_cols(x,y)
+bind_rows(x1,x2)
+union(x, y)
+intersect(x,y)
+setdiff(y, z)
+left_join(songs, artists, by = "name")
+left_join(songs2, artists2, by = c("first", "last"))
+inner_join(songs, artists, by = "name")
+semi_join(songs, artists, by = "name")

@@ -1,0 +1,168 @@
+---
+title: "3 variables"
+output: html_notebook
+---
+## 3rd Quanlitative Variable
+
+```{r}
+pf <- read.csv('pseudo_facebook.tsv', sep = '\t')
+library(ggplot2)
+library(dplyr)
+```
+
+
+```{r}
+ggplot(aes(x = gender, y = age), 
+       data = subset(pf, !is.na(gender))) + geom_boxplot() +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4)
+```
+
+```{r}
+ggplot(subset(pf, !is.na(gender)), aes(age, friend_count)) +
+  geom_line(aes(color = gender), stat = 'summary', fun.y = median)
+  
+```
+
+```{r}
+# Write code to create a new data frame,
+# called 'pf.fc_by_age_gender', that contains
+# information on each age AND gender group.
+
+# The data frame should contain the following variables:
+
+#    mean_friend_count,
+#    median_friend_count,
+#    n (the number of users in each age and gender grouping)
+
+# Here is an example of the structure of your data frame. Your
+# data values will be different. Note that if you are grouping by
+# more than one variable, you will probably need to call the
+# ungroup() function. 
+
+#   age gender mean_friend_count median_friend_count    n
+# 1  13 female          247.2953                 150  207
+# 2  13   male          184.2342                  61  265
+# 3  14 female          329.1938                 245  834
+# 4  14   male          157.1204                  88 1201
+
+
+
+pf.fc_by_age_gender <- subset(pf, !is.na(gender) & !is.na(age)) %>% 
+                        group_by(age, gender) %>% 
+                        summarise(mean_friend_count = mean(friend_count),
+                                  median_friend_count = median(friend_count),
+                                  n = n())
+pf.fc_by_age_gender
+```
+
+Correct answer:
+```{r}
+pf.fc_by_age_gender <- pf %>% 
+                        filter(!is.na(gender)) %>% 
+                        group_by(age, gender) %>% 
+                        summarise(mean_friend_count = mean(friend_count),
+                                  median_friend_count = median(friend_count),
+                                  n = n()) 
+                        
+                        
+str(pf.fc_by_age_gender)
+```
+```{r}
+pf.fc_by_age_gender <- pf %>% 
+                        filter(!is.na(gender)) %>% 
+                        group_by(age, gender) %>% 
+                        summarise(mean_friend_count = mean(friend_count),
+                                  median_friend_count = median(friend_count),
+                                  n = n()) %>% 
+                        ungroup() %>% # can clean up summarise df
+                        arrange(age)
+                        
+str(pf.fc_by_age_gender)
+```
+
+
+```{r}
+ggplot(pf.fc_by_age_gender, aes(age, mean_friend_count)) +
+  geom_line(aes(color = gender))
+```
+
+
+## reshape data
+
+```{r}
+library(tidyr)
+
+pf.fc_by_age_gender.wide <- pf.fc_by_age_gender %>% 
+                      select(age, gender, median_friend_count) %>% 
+                      spread(gender, median_friend_count) %>% 
+                      mutate(ratio = male / female)
+
+pf.fc_by_age_gender.wide
+```
+
+```{r}
+# Plot the ratio of the female to male median
+# friend counts using the data frame
+# pf.fc_by_age_gender.wide.
+
+cols <- ifelse(pf.fc_by_age_gender.wide$ratio > 1, "green", "red") 
+
+ggplot(pf.fc_by_age_gender.wide, aes(age, ratio)) +
+  geom_point(color = cols) +
+  geom_hline(yintercept=1, linetype = 2)
+```
+
+```{r}
+# Create a variable called year_joined
+# in the pf data frame using the variable
+# tenure and 2014 as the reference year.
+
+# The variable year joined should contain the year
+# that a user joined facebook.
+
+pf$year_joined <- 2014 - ceiling(pf$tenure / 365.0)
+
+
+# Then use cut function
+
+#        (2004, 2009]
+#        (2009, 2011]
+#        (2011, 2012]
+#        (2012, 2014]
+
+pf$year_joined.bucket <- cut(pf$year_joined, breaks = c(2004,2009,2011,2012,2014))
+
+
+ggplot(subset(pf, !is.na(year_joined.bucket)), aes(age, friend_count)) +
+  geom_line(aes(color = year_joined.bucket), stat = 'summary', fun.y = mean) +
+  geom_line(stat = 'summary', fun.y = mean, linetype = 2) # grand mean line
+  
+
+```
+
+
+```{r}
+# friending rate: friend_count / tenure
+with(subset(pf, tenure >= 1), summary(friend_count / tenure))
+```
+
+```{r}
+ggplot(subset(pf, tenure >= 1), aes(tenure, friend_count / tenure)) +
+  geom_line(aes(color = year_joined.bucket), stat = "summary", fun.y = mean)
+```
+
+
+```{r}
+ggplot(aes(x = 7 * round(tenure / 7), y = friendships_initiated / tenure),
+       data = subset(pf, tenure > 0)) +
+  geom_line(aes(color = year_joined.bucket),
+            stat = "summary",
+            fun.y = mean)
+```
+```{r}
+ggplot(aes(x = 7 * round(tenure / 7), y = friendships_initiated / tenure),
+       data = subset(pf, tenure > 0)) +
+  geom_smooth(aes(color = year_joined.bucket))
+```
+
+

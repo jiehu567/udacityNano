@@ -1,0 +1,125 @@
+---
+title: "P4 - Problem Set 2"
+output: html_notebook
+---
+
+
+
+```{r}
+# In this problem set, you'll continue
+# to explore the diamonds data set.
+
+# Your first task is to create a
+# scatterplot of price vs x.
+# using the ggplot syntax.
+
+library(ggplot2)
+data(diamonds)
+
+ggplot(diamonds, aes(x, price)) +
+  geom_point(alpha = 0.05, color = 'orange')
+
+ggplot(data = diamonds, aes(x = depth, y = price)) + 
+  geom_point(alpha = 0.01) +
+  scale_x_continuous(breaks = seq(43,79,2))
+```
+
+```{r}
+# Create a scatterplot of price vs carat
+# and omit the top 1% of price and carat
+# values.
+
+q_price = quantile(diamonds$price, probs = 0.99)
+q_carat = quantile(diamonds$carat, probs = 0.99)
+
+ggplot(subset(diamonds, price < q_price && carat < q_carat), aes(carat, price)) +
+  geom_point(alpha = 0.01)
+
+```
+
+
+```{r}
+diamonds$volume <- diamonds$x * diamonds$y * diamonds$z
+
+ggplot(diamonds, aes(volume, price)) +
+    geom_point()
+
+```
+
+
+```{r}
+diamond.valid_volume <- subset(diamonds, diamonds$volume > 0 & diamonds$volume < 800)
+
+cor(diamond.valid_volume$volume, diamond.valid_volume$price)
+cor(diamonds$volume, diamonds$price)
+
+ggplot(diamond.valid_volume, aes(volume, price)) + 
+  geom_point(alpha = 0.01) +
+  stat_smooth(method = 'lm', formula = y~x, size =1)
+
+
+```
+
+
+
+
+```{r}
+# Use the function dplyr package
+# to create a new data frame containing
+# info on diamonds by clarity.
+
+# Name the data frame diamondsByClarity
+
+# The data frame should contain the following
+# variables in this order.
+
+#       (1) mean_price
+#       (2) median_price
+#       (3) min_price
+#       (4) max_price
+#       (5) n
+
+# where n is the number of diamonds in each
+# level of clarity.
+
+library(dplyr)
+diamondsByClarity <- diamonds %>% 
+                      group_by(clarity) %>% 
+                      summarise(mean_price = mean(price), 
+                                median_price = median(price),
+                                min_price = min(price),
+                                max_price = max(price),
+                                n = n())
+
+```
+
+
+```{r}
+# We’ve created summary data frames with the mean price
+# by clarity and color. You can run the code in R to
+# verify what data is in the variables diamonds_mp_by_clarity
+# and diamonds_mp_by_color.
+
+# Your task is to write additional code to create two bar plots
+# on one output image using the grid.arrange() function from the package
+# gridExtra.
+
+diamonds_by_clarity <- group_by(diamonds, clarity)
+diamonds_mp_by_clarity <- summarise(diamonds_by_clarity, mean_price = mean(price))
+
+diamonds_by_color <- group_by(diamonds, color)
+diamonds_mp_by_color <- summarise(diamonds_by_color, mean_price = mean(price))
+
+library(gridExtra)
+p1 <- ggplot(diamonds_mp_by_clarity, aes(clarity, mean_price)) +
+  geom_bar(stat = "identity")
+
+p2 <- ggplot(diamonds_mp_by_color, aes(color, mean_price)) +
+  geom_bar(stat = "identity")
+grid.arrange(p1, p2, ncol = 2)
+
+```
+
+
+
+
