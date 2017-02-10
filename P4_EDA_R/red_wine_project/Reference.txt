@@ -1,0 +1,8 @@
+Reference:
+
+- UC Davis, whats-in-wine: http://waterhouse.ucdavis.edu/whats-in-wine/fixed-acidity
+- Predicting Red Wine Quality: Exploratory Data Analysis: https://rpubs.com/jeknov/redwine
+- Analysis of Red Wines Dataset by Yohann Lucas: https://rpubs.com/kaltera/UdacityP3
+- ggplot docs: http://docs.ggplot2.org/0.9.3.1/position_fill.html
+- Sugar in Wine, The Great Misunderstanding: http://winefolly.com/update/sugar-in-wine-misunderstanding/
+- The Truth About Sulfites in Wine & the Myths of Red Wine Headaches: http://www.thekitchn.com/the-truth-about-sulfites-in-wine-myths-of-red-wine-headaches-100878
