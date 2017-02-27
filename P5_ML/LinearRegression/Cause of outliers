@@ -1,0 +1,15 @@
+Cause of outliers:
+
+Can be ignored:
+1. sensor malfunction
+2. data entry
+
+Shouldn't be ignored:
+3. Freak event
+
+outlier detection:
+A good alg:
+1. train
+2. remove point with lagest error
+3. train again
+
