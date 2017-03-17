@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="./js/d3.v3.min.js"></script>
+        <script src="./js/dimple.v2.0.0.min.js"></script>
+        <script src="./js/drawLine_after.js"></script>
+    </head>
+    <body>
+        <div id = "titleContainer">
+        <h2>Home and Away fixtures really do make a difference!</h2>
+        </div>
+        
+        <div id="chartContainer">
+        <div id="legend_II">
+		    <p style="margin-left: 340px; font-size: 12px; margin-top: 0cm;">Home: &#9644;&#9644;&#9644;&#9644; Away: &#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</p>
+		</div>
+        <script type="text/javascript">
+            d3.csv("./data/win-rate-data.csv", draw_line);
+
+        </script>
+        
+</div>
+<div id="explain">
+		    <p>By mouseover the lines, you can get more findings, for example:</p>
+            <li>The difference between home wins and away wins is obvious. Home team did have big advantage to away team</li>
+            <li>The Scotland matches had least average difference between home wins and away wins</li>
+            <li>Most league had big difference between home wins and away wins in 2008, but such difference turned smaller during 2014-2015, then expanded in 2016</li>
+</div>
+    </body>
+
+</html>
