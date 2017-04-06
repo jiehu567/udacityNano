@@ -8,7 +8,7 @@ output:
 by Jie Hu, Email: [jie.hu.ds@gmail.com](mailto:jie.hu.ds@gmail.com)
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+```{r packages}
 library(GGally)  # scatter matrix
 library(scales)
 library(memisc)  # summarize regression
@@ -51,7 +51,7 @@ wine_data <- subset(wine_data, select = -c(X))
 
 To begin with, let's summarise the data:
 
-```{r,echo=FALSE,message=TRUE}
+```{r}
 str(wine_data)
 ```
 
@@ -60,7 +60,7 @@ The dataset includes 1599 observations with  12 variables.
 Then let's explot the variables one by one.
 Because all the variables are numeric, I will mainly use histogram to explore and figure out if there're something interesting worth further steps.
 
-```{r, echo=FALSE}
+```{r}
 hist_plot <- function(variable, 
                       data, 
                       label,
@@ -85,7 +85,7 @@ hist_plot <- function(variable,
 
 Quality is what this report concerns with, the rate here represent average rate from at least 3 experts. First let's see how the quality of 1599 wine distributed.
 
-```{r, echo=FALSE}
+```{r}
 hist_plot(variable = wine_data$quality, 
           data = wine_data, 
           label = QUALITY_LABEL, 
@@ -94,11 +94,11 @@ hist_plot(variable = wine_data$quality,
           scale_xlab = 1)
 ```
 
-```{r, echo=FALSE}
+```{r}
 summary(wine_data$quality)
 ```
  
-```{r, echo=FALSE}
+```{r}
 table(wine_data$quality)
 ```
 
