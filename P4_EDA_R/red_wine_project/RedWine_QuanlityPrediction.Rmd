@@ -7,10 +7,6 @@ output:
 
 by Jie Hu, Email: [jie.hu.ds@gmail.com](mailto:jie.hu.ds@gmail.com)
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
-                      echo=FALSE, warning=FALSE, message=FALSE)
-```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
 library(GGally)  # scatter matrix
