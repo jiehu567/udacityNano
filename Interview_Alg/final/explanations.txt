@@ -1,0 +1,135 @@
+
+# Udacity interview practice questions
+# by Jie, jie.hu.ds@gmail.com
+
+
+# Question 1
+Given two strings s and t, determine whether some anagram of t is a substring of s. For example: if s = "udacity" and t = "ad", then the function returns True. Your function definition should look like: question1(s, t) and return a boolean True or False.
+
+
+
+- Ideas: 
+I use loop to extract substring from original string, then determine if it's an anagram by sort the 2 arrays
+I just use array and list for this question because they are fast to index and sort
+
+
+- Time Complexity
+
+    1) len_s, len_t = len(s), len(t):  cost 2
+    2) if len_s < len_t: cost 1
+    3) for loop: cost (len_s - len_t) * O(is_anagram)
+    4) Because O(is_anagram) = 2 + 1 + O(sort string) * 2 + O(len_t) and since python is using TimSort algorithm and O(sort string) will be len_t * log(len_t) in average case, so O(is_anagram) ~ O(len_t * log(len_t))
+    5) Put together, complexity of such algorithm is: O(len_t * log(len_t) * (len_s - len_t)), if in most case len_t << len_s, the average complexity will be O(mn*log(m)), in which m is length of the shorter string, and n is length of the longer string
+    6) Worst case: because TimSort will stay O(nlog(n)) even in worst case, so is_anagram will stay the same. Because for loop will stay the same complexity, so the worst case will have same complexity as average case: O(mn*log(m))
+
+
+- Space Cost:
+Since no extra array will be stored, the space cost will only be O(1)
+
+==============================================================================
+
+# Question 2
+Given a string a, find the longest palindromic substring contained in a. Your function definition should look like question2(a), and return a string.
+
+- Ideas: 
+I just use array to do such job, because it's easy to index and not necessary to transform array into other data structures.
+And the question is asking to find out the longest substring which is palindromic, so instead of start from short one, I start with longest one, and stop whenever there's palindromic showing up. This will save a lot of time.
+
+- Time Complexity:
+The most time consumming part is two for loops. The larger l is, the less value i will take. By list the value of the l and i, I find the total is: In worst case, we have to go all the way from full length down to a single character, total = 1 + 2 + ... + n - 1 = n(n-1)/2, so O(n^2). The average case won't affect structure so the result will be the same.
+
+Because the question is asking to return longest palindromic substring, so instead of starting from length 1, I start from the full length and it stops whenever there's a fit to palindromic. When the length of the longest palindromic is not 1, we will have a big advantage: it's not necessary to loop all the possible lengths, from 1 to len(a). So compared to another algorithm which start from the substrings with 2 characters, above algorithm will minimize the calculation we need under same estimated complexity.
+
+- Space:
+Since no extra array will be stored, the space cost will only be O(1)
+
+
+==============================================================================
+
+# Question 3
+Given an undirected graph G, find the minimum spanning tree within G. A minimum spanning tree connects all vertices in a graph with the smallest possible total weight of edges. Your function should take in and return an adjacency list structured like this:
+
+{'A': [('B', 2)],
+ 'B': [('A', 2), ('C', 5)], 
+ 'C': [('B', 5)]}
+Vertices are represented as unique strings. The function definition should be question3(G)
+
+- Ideas: 
+	- Use Kruskal's algorithm, sort the edges by weight, then add edges one by one
+		check if there's a circuit whenever add a new edge, if yes, skip this edge
+		else, add the edge into spanning tree edge list
+		Finally, format output and produce the desired result
+
+	- The make_circuit method uses modified UnionFind algorithm, here, instead of create a new graph, I used just the existing list of edges to determine if there's a circuit so as to save space
+
+- Time Complexity:
+Suppose there're n nodes and m edges in a graph. Then
+	- In Kruskal's algorithm, sorting takes O(mlog(m)) time
+	- Then iterations over all edges use union find algorithm, each cost O(log(n)) at most
+	- Put together, it's O(mlog(m) + mlog(n)) = O(mlog(n)) (because O(m) <= O(n^2) and O(log(m)) <= O(2log(n)) 
+
+- Space:
+Since the code is using array to store sorted edges, the space cost will be O(m)
+
+
+==============================================================================
+
+# Question 4
+Find the least common ancestor between two nodes on a binary search tree. The least common ancestor is the farthest node from the root that is an ancestor of both nodes. For example, the root is a common ancestor of all nodes on the tree, but if both nodes are descendents of the root's left child, then that left child might be the lowest common ancestor. You can assume that both nodes are in the tree, and the tree itself adheres to all BST properties. The function definition should look like question4(T, r, n1, n2), where T is the tree represented as a matrix, where the index of the list is equal to the integer stored in that node and a 1 represents a child node, r is a non-negative integer representing the root, and n1 and n2 are non-negative integers representing the two nodes in no particular order. For example, one test case might be
+
+question4([[0, 1, 0, 0, 0],
+           [0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0],
+           [1, 0, 0, 0, 1],
+           [0, 0, 0, 0, 0]],
+          3,
+          1,
+          4)
+and the answer would be 3.
+
+- Ideas: 
+	If root larger than maximum of n1 and n2, traverse left, 
+        If root smaller than minimum of n1 and n2, traverse right
+        Else, when root is between two nodes, it's the least common ancestor.
+
+
+- Time Complexity:
+
+	- In worst case if the bst is like a linked list, the traverse might traverse all nodes, so O(n)
+	  But in average, it's O(log(n)), the average height of tree to find least common ancestor
+
+
+- Space:
+Since no extra space cost in calculation, and all calculations are based on existing tree, it's just O(1)
+
+
+==============================================================================
+
+# Question 5
+
+Question 5
+Find the element in a singly linked list that's m elements from the end. For example, if a linked list has 5 elements, the 3rd element from the end is the 3rd element. The function definition should look like question5(ll, m), where ll is the first node of a linked list and m is the "mth number from the end". You should copy/paste the Node class below to use as a representation of a node in the linked list. Return the value of the node at that position.
+
+class Node(object):
+  def __init__(self, data):
+    self.data = data
+    self.next = None
+
+- Ideas: 
+	- Add attribute length in linked list class so as to get distance to go when m steps to the end
+
+- Time Complexity:
+
+	- Since the only thing need to do is to iterate till the right node, so time complexity is O(length(ll) - m) 
+	which is O(n) in worst case, because m < lenth(ll) and it's possible to make m pretty close to n or even n.
+
+- Space:
+There're only calculation based on linked list, space cost is just O(1)
+
+
+
+
+
+
+
+
